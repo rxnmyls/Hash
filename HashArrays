@@ -1,0 +1,93 @@
+class HashTable {
+    private String[] keys;   // Array to store keys
+    private String[] values; // Array to store values
+    private int capacity;    // Size of the hash table
+    private int size;        // Number of elements in the hash table
+
+    // Constructor to initialize the hash table
+    public HashTable(int capacity) {
+        this.capacity = capacity;
+        this.keys = new String[capacity];
+        this.values = new String[capacity];
+        this.size = 0;
+    }
+    // Hash function to compute index for a given key
+    private int hash(String key) {
+        return key.hashCode() % capacity; // Simple hash function
+    }
+    // Method to add a new key-value pair
+    public void put(String key, String value) {
+        int index = hash(key);
+        // Handle collision using linear probing
+        while (keys[index] != null) {
+            if (keys[index].equals(key)) { // Update existing key
+                values[index] = value;
+                return;
+            }
+            index = (index + 1) % capacity; // Move to the next index
+        }
+        // Insert the new key-value pair
+        keys[index] = key;
+        values[index] = value;
+        size++;
+    }
+
+    // Method to get the value for a given key
+    public String get(String key) {
+        int index = hash(key);
+        
+        // Search for the key using linear probing
+        while (keys[index] != null) {
+            if (keys[index].equals(key)) {
+                return values[index]; // Return associated value
+            }
+            index = (index + 1) % capacity; // Move to the next index
+        }
+
+        return null; // Key not found
+    }
+    // Method to remove a key-value pair
+    public void remove(String key) {
+        int index = hash(key);
+        
+        // Search for the key using linear probing
+        while (keys[index] != null) {
+            if (keys[index].equals(key)) {
+                keys[index] = null;  // Remove the key
+                values[index] = null; // Remove the associated value
+                size--;
+                return;
+            }
+            index = (index + 1) % capacity; // Move to the next index
+        }
+    }
+
+    // Method to print all key-value pairs in the hash table
+    public void printTable() {
+        for (int i = 0; i < capacity; i++) {
+            if (keys[i] != null) {
+                System.out.println("Key: " + keys[i] + ", Value: " + values[i]);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        HashTable hashTable = new HashTable(10);
+        
+        hashTable.put("A101", "Product A");
+        hashTable.put("B202", "Product B");
+        hashTable.put("C303", "Product C");
+        
+        System.out.println("Value for A101: " + hashTable.get("A101"));
+        
+        hashTable.remove("B202");
+        
+        System.out.println("After removing B202:");
+        hashTable.printTable();
+        
+        hashTable.put("A101", "Updated Product A");
+        
+        System.out.println("After updating A101:");
+        hashTable.printTable();
+    }
+}
